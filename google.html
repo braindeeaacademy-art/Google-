@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Student Ambassador Meetup 2026 - Registration Portal</title>
+  
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome & Material Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- jsPDF for Certificate compiling -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            googleBlue: '#1a73e8',
+            googleRed: '#ea4335',
+            googleYellow: '#fbbc05',
+            googleGreen: '#34a853',
+            googleGray: '#f8f9fa',
+            googleText: '#202124',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Premium custom scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+    
+    /* Animation effects */
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Gradient borders */
+    .google-gradient-border {
+      background: linear-gradient(to right, #1a73e8, #ea4335, #fbbc05, #34a853);
+      height: 6px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="bg-[#f0f4f9] text-googleText min-h-screen font-sans flex flex-col antialiased">
+
+  <!-- Top Responsive Banner & Navigation bar -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="google-gradient-border"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+      
+      <!-- Brand & Logos -->
+      <div class="flex items-center gap-4">
+        <img src="https://geministudentambassador.com/logo-04-header.png" alt="Google Student Ambassador" class="h-10 object-contain max-w-[160px] sm:max-w-none" onerror="this.src='https://placehold.co/150x40/1a73e8/ffffff?text=Google+Ambassador'">
+        <div class="h-8 w-[1px] bg-gray-300 hidden sm:block"></div>
+        <div class="flex items-center gap-2">
+          <img src="https://misleading-blush-gqo7vz82st.edgeone.app/jntuhlogo%20(2).png" alt="JNTUH Logo" class="h-10 object-contain" onerror="this.src='https://placehold.co/40x40/1a73e8/ffffff?text=JNTUH'">
+          <span class="text-xs font-semibold text-gray-500 max-w-[120px] leading-tight hidden md:block">JNTUH UCEM Collaboration</span>
+        </div>
+        <!-- Connection Status Indicator Badge -->
+        <div id="connection-status" class="hidden items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300">
+          <span class="w-2 h-2 rounded-full"></span>
+          <span class="status-text">Checking...</span>
+        </div>
+      </div>
+      
+      <!-- Page Switchers -->
+      <nav class="flex items-center bg-gray-100 p-1 rounded-xl shadow-inner text-sm font-medium gap-1">
+        <button onclick="switchView('register')" id="nav-register" class="px-4 py-2 rounded-lg transition-all duration-200 bg-white text-googleBlue shadow-sm">
+          <i class="fa-solid fa-user-plus mr-1.5"></i>Register
+        </button>
+        <button onclick="switchView('claim')" id="nav-claim" class="px-4 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-googleBlue">
+          <i class="fa-solid fa-certificate mr-1.5"></i>Get Certificate
+        </button>
+        <button onclick="switchView('admin-login')" id="nav-admin" class="px-4 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-googleBlue">
+          <i class="fa-solid fa-lock mr-1.5"></i>Admin Portal
+        </button>
+      </nav>
+      
+    </div>
+  </header>
+
+  <!-- Notification Banner Toast system (No Alerts allowed) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- Main View Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- View 1: Event Registration Form & Cover details -->
+    <div id="view-register" class="fade-in space-y-8">
+      
+      <!-- Premium Hero Event Banner Card -->
+      <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+        <div class="p-8 md:w-2/3 space-y-4">
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-blue-50 text-googleBlue text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Meetup 2026</span>
+            <span class="bg-green-50 text-googleGreen text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">AI Challenge</span>
+          </div>
+          <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            Google Student Ambassador Meetup 2026
+          </h1>
+          <h2 class="text-xl font-medium text-gray-600 font-sans">
+            AI Poster Design Challenge using Gemini + Nano Banana
+          </h2>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Hosted exclusively for <strong class="text-gray-800">JNTUH University College of Engineering Mahabubabad</strong>. Join the tech revolution, showcase your design logic empowered by Google Gemini AI, and earn your verified digital certificate of completion!
+          </p>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 text-sm">
+            <div class="flex items-center gap-2.5 bg-gray-50 p-3 rounded-xl">
+              <i class="fa-regular fa-calendar-days text-googleBlue text-lg"></i>
+              <div>
+                <p class="text-xs text-gray-400 font-medium">Date</p>
+                <p class="font-semibold text-gray-800">6th June 2026</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 bg-gray-50 p-3 rounded-xl">
+              <i class="fa-regular fa-clock text-googleRed text-lg"></i>
+              <div>
+                <p class="text-xs text-gray-400 font-medium">Time</p>
+                <p class="font-semibold text-gray-800">12:30 PM IST</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 bg-gray-50 p-3 rounded-xl">
+              <i class="fa-solid fa-video text-googleGreen text-lg"></i>
+              <div>
+                <p class="text-xs text-gray-400 font-medium">Mode</p>
+                <p class="font-semibold text-gray-800">Google Meet</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 bg-gray-50 p-3 rounded-xl">
+              <i class="fa-solid fa-graduation-cap text-googleYellow text-lg"></i>
+              <div>
+                <p class="text-xs text-gray-400 font-medium">Eligibility</p>
+                <p class="font-semibold text-gray-800">All Students</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Interactive Right Banner Graphics Panel -->
+        <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 md:w-1/3 p-8 flex flex-col justify-between text-white relative overflow-hidden">
+          <div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-white/10 blur-xl"></div>
+          <div class="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-yellow-500/15 blur-xl"></div>
+          
+          <div class="z-10">
+            <h3 class="text-lg font-bold tracking-wide">GEMINI NANO BANANA</h3>
+            <p class="text-xs text-blue-100 mt-1">Next-gen multimodal micro models on edge devices.</p>
+          </div>
+          
+          <div class="z-10 my-8">
+            <div class="bg-white/15 backdrop-blur-md rounded-xl p-4 border border-white/10 text-xs space-y-2">
+              <p class="font-semibold"><i class="fa-solid fa-award text-yellow-300 mr-1.5"></i> Perks & Perks</p>
+              <ul class="space-y-1 text-blue-50">
+                <li>• Live Hand-on Training Session</li>
+                <li>• Realtime AI Art Hackathon</li>
+                <li>• Verifiable PDF Certificates</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="z-10 text-xs text-blue-200">
+            Organized by: <strong class="text-white font-medium">Google Student Ambassadors</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Student Registration Form Panel -->
+      <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden max-w-3xl mx-auto">
+        <div class="bg-googleBlue px-6 py-4 text-white flex items-center justify-between">
+          <h3 class="font-semibold text-lg flex items-center gap-2">
+            <i class="fa-solid fa-file-signature"></i> Student Enrollment Form
+          </h3>
+          <span class="text-xs bg-white/20 px-3 py-1 rounded-full">Secure SSL Sync</span>
+        </div>
+        
+        <form id="registration-form" class="p-8 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Full Name Field -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-fullname">Full Name <span class="text-googleRed">*</span></label>
+              <input type="text" id="reg-fullname" required placeholder="Enter your full name" 
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150">
+            </div>
+
+            <!-- Email Field -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-email">Student Email / Gmail <span class="text-googleRed">*</span></label>
+              <input type="email" id="reg-email" required placeholder="username@gmail.com" 
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150">
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-mobile">Mobile Number <span class="text-googleRed">*</span></label>
+              <input type="tel" id="reg-mobile" required placeholder="10-digit mobile number" pattern="[0-9]{10}"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150">
+            </div>
+
+            <!-- Roll Number -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-rollnumber">Roll Number / Student ID <span class="text-googleRed">*</span></label>
+              <input type="text" id="reg-rollnumber" required placeholder="e.g. 23M41A0501" 
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150 uppercase">
+            </div>
+
+            <!-- College Name (ReadOnly Default) -->
+            <div class="space-y-1 md:col-span-2">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-college">College Name</label>
+              <input type="text" id="reg-college" readonly value="JNTUH University College of Engineering Mahabubabad" 
+                class="w-full px-4 py-2.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 outline-none cursor-not-allowed font-medium text-sm">
+            </div>
+
+            <!-- Branch Dropdown -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-branch">Branch <span class="text-googleRed">*</span></label>
+              <select id="reg-branch" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150">
+                <option value="">Choose Branch</option>
+                <option value="CSE">CSE</option>
+                <option value="CSE-DS">CSE-DS</option>
+                <option value="ECE">ECE</option>
+                <option value="EEE">EEE</option>
+                <option value="MECH">MECH</option>
+                <option value="CIVIL">CIVIL</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Year of Study Dropdown -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-year">Year of Study <span class="text-googleRed">*</span></label>
+              <select id="reg-year" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150">
+                <option value="">Choose Year</option>
+                <option value="1st">1st Year</option>
+                <option value="2nd">2nd Year</option>
+                <option value="3rd">3rd Year</option>
+                <option value="4th">4th Year</option>
+              </select>
+            </div>
+
+            <!-- Gender -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700" for="reg-gender">Gender (Optional)</label>
+              <select id="reg-gender" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-googleBlue focus:border-googleBlue outline-none transition duration-150">
+                <option value="Prefer Not to Say">Prefer Not to Say</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non-Binary">Non-Binary</option>
+              </select>
+            </div>
+
+            <!-- Google Account Question -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700">Do you have a Google Account? <span class="text-googleRed">*</span></label>
+              <div class="flex gap-4 pt-1.5">
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                  <input type="radio" name="reg-google-acc" value="Yes" checked class="w-4 h-4 text-googleBlue border-gray-300 focus:ring-googleBlue"> Yes
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                  <input type="radio" name="reg-google-acc" value="No" class="w-4 h-4 text-googleBlue border-gray-300 focus:ring-googleBlue"> No
+                </label>
+              </div>
+            </div>
+
+            <!-- Familiarity with Gemini Question -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700">Are you familiar with Gemini AI? <span class="text-googleRed">*</span></label>
+              <div class="flex gap-4 pt-1.5">
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                  <input type="radio" name="reg-gemini-familiar" value="Yes" checked class="w-4 h-4 text-googleBlue border-gray-300 focus:ring-googleBlue"> Yes
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                  <input type="radio" name="reg-gemini-familiar" value="No" class="w-4 h-4 text-googleBlue border-gray-300 focus:ring-googleBlue"> No
+                </label>
+              </div>
+            </div>
+
+            <!-- Google Meet Session Question -->
+            <div class="space-y-1">
+              <label class="block text-sm font-semibold text-gray-700">Will you attend the Google Meet session? <span class="text-googleRed">*</span></label>
+              <div class="flex gap-4 pt-1.5">
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                  <input type="radio" name="reg-meet-attend" value="Yes" checked class="w-4 h-4 text-googleBlue border-gray-300 focus:ring-googleBlue"> Yes
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                  <input type="radio" name="reg-meet-attend" value="No" class="w-4 h-4 text-googleBlue border-gray-300 focus:ring-googleBlue"> No
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Consent Checkboxes -->
+          <div class="space-y-3 pt-4 border-t border-gray-100">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" id="reg-consent-recording" required class="mt-0.5 rounded border-gray-300 text-googleBlue focus:ring-googleBlue w-4 h-4">
+              <span class="text-xs text-gray-500 leading-normal">
+                I hereby consent to the recording of the event sessions for administrative and educational purposes. <span class="text-googleRed">*</span>
+              </span>
+            </label>
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" id="reg-consent-updates" required class="mt-0.5 rounded border-gray-300 text-googleBlue focus:ring-googleBlue w-4 h-4">
+              <span class="text-xs text-gray-500 leading-normal">
+                I agree to receive communications regarding event links, reminders, and updates. <span class="text-googleRed">*</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Attendance Notice Alert Box -->
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3 items-start text-xs text-blue-800">
+            <i class="fa-solid fa-circle-info text-blue-600 mt-0.5 text-sm"></i>
+            <div>
+              <p class="font-bold mb-1">Attendance & Certificate Policy</p>
+              <p class="leading-relaxed">By default, your registration status is recorded as <strong class="text-googleRed">Absent</strong>. Your attendance must be marked as <strong class="text-googleGreen">Present</strong> by the Event Admin during the live Google Meet session on 6th June 2026 before you can generate your certificate.</p>
+            </div>
+          </div>
+
+          <!-- Submit Action button -->
+          <div class="pt-2">
+            <button type="submit" id="submit-btn" class="w-full bg-googleBlue hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 transform active:scale-95 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Submit Registration
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- View 2: Claim Certificate and Download PDF Page -->
+    <div id="view-claim" class="hidden fade-in space-y-6 max-w-4xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8 text-center space-y-6">
+        <div class="mx-auto w-16 h-16 bg-blue-50 text-googleBlue rounded-full flex items-center justify-center text-3xl">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="space-y-2">
+          <h2 class="text-2xl font-bold text-gray-900">Certificate Generation Portal</h2>
+          <p class="text-sm text-gray-500 max-w-md mx-auto">
+            Once you have registered and your attendance is marked as <strong class="text-googleGreen">Present</strong> by the host, you can fetch and download your certified credential.
+          </p>
+        </div>
+
+        <!-- Verification Search Bar -->
+        <div class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+          <input type="text" id="claim-search-val" placeholder="Enter Roll Number / Email" 
+            class="flex-grow px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-googleBlue outline-none text-center sm:text-left">
+          <button onclick="checkEligibility()" class="bg-googleBlue hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl flex items-center justify-center gap-2">
+            <i class="fa-solid fa-search"></i> Verify & Generate
+          </button>
+        </div>
+
+        <!-- Dynamic Success/Fail Message Box -->
+        <div id="claim-status-box" class="hidden max-w-md mx-auto p-4 rounded-xl text-sm font-medium"></div>
+
+        <!-- Certificate Interactive Preview Frame -->
+        <div id="certificate-preview-area" class="hidden space-y-6">
+          <div class="border-t border-gray-100 pt-6">
+            <h3 class="text-md font-semibold text-gray-700 mb-4 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-eye text-googleGreen"></i> Live Print Preview
+            </h3>
+            <div class="overflow-x-auto p-2 bg-gray-50 border border-gray-100 rounded-2xl flex justify-center">
+              <canvas id="certificate-canvas" width="1200" height="848" class="max-w-full h-auto shadow-lg rounded-lg border border-gray-200"></canvas>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-4">
+            <button onclick="downloadCertificatePDF()" class="bg-googleGreen hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2">
+              <i class="fa-solid fa-file-pdf"></i> Download PDF Certificate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 3: Admin Login & Secure Dashboard Layout -->
+    <div id="view-admin-login" class="hidden fade-in max-w-md mx-auto">
+      <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="mx-auto w-12 h-12 bg-red-50 text-googleRed rounded-full flex items-center justify-center text-xl">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h2 class="text-xl font-bold">Admin Console Sign In</h2>
+          <p class="text-xs text-gray-400">Restricted to organizers and student ambassadors</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Access Passkey</label>
+            <input type="password" id="admin-passkey" placeholder="Enter passcode" 
+              class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-googleRed outline-none text-center tracking-widest font-mono">
+          </div>
+          <button onclick="attemptAdminLogin()" class="w-full bg-googleRed hover:bg-red-700 text-white font-bold py-2.5 rounded-xl shadow transition duration-200">
+            Authenticate Access
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Portal Shell (Locked default until authorized) -->
+    <div id="view-admin-dashboard" class="hidden fade-in space-y-6">
+      
+      <!-- Top Overview Bar -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900">Control & Operational Command Desk</h2>
+          <p class="text-xs text-gray-400">JNTUH UCEM Ambassador Administration Space</p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="exportToCSV()" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold px-4 py-2 rounded-xl text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-file-csv text-googleGreen"></i> Export Excel/CSV
+          </button>
+          <button onclick="openSimulationConsole()" class="bg-googleBlue text-white hover:bg-blue-700 font-semibold px-4 py-2 rounded-xl text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-terminal"></i> Mass Communications Panel
+          </button>
+          <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 py-2 rounded-xl text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Operations Stat Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="bg-white p-6 rounded-2xl border-l-4 border-googleBlue shadow-sm">
+          <p class="text-xs uppercase font-bold text-gray-400 tracking-wider">Total Enrolled</p>
+          <div class="flex items-baseline justify-between mt-2">
+            <span id="stat-total" class="text-3xl font-extrabold text-gray-900">0</span>
+            <i class="fa-solid fa-users text-blue-200 text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border-l-4 border-googleGreen shadow-sm">
+          <p class="text-xs uppercase font-bold text-gray-400 tracking-wider">Attendance (Present)</p>
+          <div class="flex items-baseline justify-between mt-2">
+            <span id="stat-present" class="text-3xl font-extrabold text-googleGreen">0</span>
+            <i class="fa-solid fa-user-check text-green-200 text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border-l-4 border-googleRed shadow-sm">
+          <p class="text-xs uppercase font-bold text-gray-400 tracking-wider">Attendance (Absent)</p>
+          <div class="flex items-baseline justify-between mt-2">
+            <span id="stat-absent" class="text-3xl font-extrabold text-googleRed">0</span>
+            <i class="fa-solid fa-user-xmark text-red-200 text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border-l-4 border-googleYellow shadow-sm">
+          <p class="text-xs uppercase font-bold text-gray-400 tracking-wider">Attendance Ratio</p>
+          <div class="flex items-baseline justify-between mt-2">
+            <span id="stat-ratio" class="text-3xl font-extrabold text-gray-900">0%</span>
+            <i class="fa-solid fa-percent text-yellow-200 text-2xl"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Data Search & Table Interface -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div class="relative w-full md:w-80">
+            <i class="fa-solid fa-search text-gray-400 absolute left-3 top-3.5"></i>
+            <input type="text" id="admin-search" oninput="applyFilters()" placeholder="Search Name, ID, or Email..." 
+              class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-googleBlue text-sm">
+          </div>
+          
+          <div class="flex gap-2 w-full md:w-auto justify-end flex-wrap">
+            <select id="filter-branch" onchange="applyFilters()" class="text-xs border border-gray-300 rounded-lg p-2 bg-white">
+              <option value="">All Branches</option>
+              <option value="CSE">CSE</option>
+              <option value="CSE-DS">CSE-DS</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="MECH">MECH</option>
+              <option value="CIVIL">CIVIL</option>
+              <option value="Other">Other</option>
+            </select>
+            <select id="filter-year" onchange="applyFilters()" class="text-xs border border-gray-300 rounded-lg p-2 bg-white">
+              <option value="">All Years</option>
+              <option value="1st">1st Year</option>
+              <option value="2nd">2nd Year</option>
+              <option value="3rd">3rd Year</option>
+              <option value="4th">4th Year</option>
+            </select>
+            <select id="filter-attendance" onchange="applyFilters()" class="text-xs border border-gray-300 rounded-lg p-2 bg-white">
+              <option value="">All Statuses</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3">Student Name</th>
+                <th scope="col" class="px-6 py-3">Roll ID</th>
+                <th scope="col" class="px-6 py-3">Branch & Year</th>
+                <th scope="col" class="px-6 py-3">Contact</th>
+                <th scope="col" class="px-6 py-3 text-center">Familiar with AI</th>
+                <th scope="col" class="px-6 py-3 text-center">Attendance Status</th>
+                <th scope="col" class="px-6 py-3 text-center">Operation</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body" class="divide-y divide-gray-100 bg-white">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Communication Dashboard Console modal -->
+    <div id="modal-console" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-googleBlue px-6 py-4 text-white flex justify-between items-center">
+          <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-terminal"></i> Broadcast Console Terminal</h3>
+          <button onclick="closeSimulationConsole()" class="text-white hover:text-gray-200 text-lg">&times;</button>
+        </div>
+        
+        <div class="p-6 flex-grow overflow-y-auto space-y-4">
+          <p class="text-xs text-gray-500 leading-normal">
+            Trigger simulated secure network jobs for emails, calendar scheduling invites, and certificate distribution notifications.
+          </p>
+          
+          <div class="space-y-2">
+            <button onclick="triggerBroadcast('meet')" class="w-full bg-blue-50 hover:bg-blue-100 text-googleBlue font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-between border border-blue-200">
+              <span><i class="fa-solid fa-video mr-1.5"></i> Broadcast Meet Link via Mail</span>
+              <span class="text-xs bg-googleBlue text-white px-2.5 py-0.5 rounded-full">Transmit</span>
+            </button>
+            <button onclick="triggerBroadcast('cert')" class="w-full bg-green-50 hover:bg-green-100 text-googleGreen font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-between border border-green-200">
+              <span><i class="fa-solid fa-award mr-1.5"></i> Bulk Generate & Mail Certificates</span>
+              <span class="text-xs bg-googleGreen text-white px-2.5 py-0.5 rounded-full">Transmit</span>
+            </button>
+          </div>
+
+          <div class="space-y-1">
+            <span class="text-[11px] font-bold uppercase text-gray-400">Terminal Log output</span>
+            <div id="terminal-log" class="bg-gray-900 rounded-xl p-3 text-[11px] font-mono text-green-400 h-40 overflow-y-auto space-y-1">
+              [SYSTEM INSTALLED] Terminal Ready for commands...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Professional Footer branding design -->
+  <footer class="bg-white border-t border-gray-200 py-6 mt-12 text-center text-xs text-gray-400 space-y-2">
+    <p>Google Student Ambassador Program Meetup © 2026</p>
+    <p class="max-w-md mx-auto text-[11px] leading-relaxed">
+      In direct academic collaboration with the Joint Department of Computer Science Engineering and Electronics, JNTUH University College of Engineering Mahabubabad, Telangana State, India.
+    </p>
+  </footer>
+
+  <!-- Firebase Core SDK compatibility layer -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // User Provided Configuration details with verification measures
+    const firebaseConfig = {
+      apiKey: "AIzaSyAZA70bgxqeMsRMP1ri6B_FNLyD5CZA3fc",
+      authDomain: "localzip.firebaseapp.com",
+      projectId: "localzip",
+      storageBucket: "localzip.firebasestorage.app",
+      messagingSenderId: "593061380454",
+      appId: "1:593061380454:web:c7c0558e52e4b7897488a7",
+      measurementId: "G-XVZQJGKLCP"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Enable offline data access persistence so all reads & writes work seamlessly offline
+    db.enablePersistence({ synchronizeTabs: true })
+      .then(() => {
+        console.log("Firestore local persistence enabled.");
+      })
+      .catch((err) => {
+        if (err.code == 'failed-precondition') {
+          console.warn("Persistence failed: multiple tabs open.");
+        } else if (err.code == 'unimplemented') {
+          console.warn("Persistence unimplemented in this browser.");
+        }
+      });
+
+    const auth = firebase.auth();
+
+    // App ID fallback mapping for Firestore sandbox
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'gsa-meetup-2026';
+
+    // Global variables
+    let databaseReference = [];
+    let authenticatedUser = null;
+    let selectedStudentForCertificate = null;
+
+    // Dynamic Network Connectivity Status Update Engine
+    function updateConnectionStatus() {
+      const statusEl = document.getElementById('connection-status');
+      if (!statusEl) return;
+      const indicator = statusEl.querySelector('span');
+      const text = statusEl.querySelector('.status-text');
+      
+      statusEl.classList.remove('hidden', 'flex');
+      statusEl.classList.add('flex');
+      
+      if (navigator.onLine) {
+        statusEl.className = "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-googleGreen border border-green-100";
+        indicator.className = "w-2 h-2 rounded-full bg-googleGreen animate-pulse";
+        text.innerText = "Online";
+        setTimeout(() => {
+          if (navigator.onLine) statusEl.classList.add('hidden');
+        }, 3000);
+      } else {
+        statusEl.className = "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100";
+        indicator.className = "w-2 h-2 rounded-full bg-amber-600 animate-pulse";
+        text.innerText = "Offline Mode (Synced)";
+      }
+    }
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+
+    // Secure Auto authentication protocol immediately upon init
+    window.addEventListener('DOMContentLoaded', async () => {
+      updateConnectionStatus();
+      try {
+        const customToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        if (customToken) {
+          await auth.signInWithCustomToken(customToken);
+        } else {
+          await auth.signInAnonymously();
+        }
+      } catch (error) {
+        console.warn("Auth initialization failed due to offline state. Fallback initialized.", error);
+        showToast("Offline workspace ready. Registrations will queue and sync on connection.", "warning");
+        // Inject a localized mock user so the Firestore listener initializes locally
+        authenticatedUser = { uid: "offline-auth-user" };
+        initFirestoreSync();
+      }
+    });
+
+    // Monitor auth status and subscribe to Firestore updates
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        authenticatedUser = user;
+        initFirestoreSync();
+      }
+    });
+
+    // Built-in clean Toast Notification Manager to replace alerts and conforms
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `flex items-center gap-3 p-4 rounded-xl shadow-lg border text-sm font-semibold transition duration-300 ease-in-out transform translate-y-2 opacity-0 select-none pointer-events-auto`;
+      
+      let icon = '';
+      if (type === 'success') {
+        toast.className += ' bg-green-50 border-green-200 text-googleGreen';
+        icon = '<i class="fa-solid fa-circle-check text-lg"></i>';
+      } else if (type === 'error') {
+        toast.className += ' bg-red-50 border-red-200 text-googleRed';
+        icon = '<i class="fa-solid fa-circle-exclamation text-lg"></i>';
+      } else {
+        toast.className += ' bg-yellow-50 border-yellow-200 text-yellow-700';
+        icon = '<i class="fa-solid fa-triangle-exclamation text-lg"></i>';
+      }
+
+      toast.innerHTML = `${icon} <span class="flex-grow">${message}</span>`;
+      container.appendChild(toast);
+
+      // Force repaint & transition
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      // Dismiss transition after 4 seconds
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Dynamic Navigation controller matching SPA architecture
+    function switchView(viewName) {
+      // Hide all standard layouts
+      document.getElementById('view-register').classList.add('hidden');
+      document.getElementById('view-claim').classList.add('hidden');
+      document.getElementById('view-admin-login').classList.add('hidden');
+      document.getElementById('view-admin-dashboard').classList.add('hidden');
+
+      // Remove colors from navigation panel
+      const buttons = ['nav-register', 'nav-claim', 'nav-admin'];
+      buttons.forEach(id => {
+        const btn = document.getElementById(id);
+        btn.className = "px-4 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-googleBlue";
+      });
+
+      // Map active states
+      if (viewName === 'register') {
+        document.getElementById('view-register').classList.remove('hidden');
+        document.getElementById('nav-register').className = "px-4 py-2 rounded-lg transition-all duration-200 bg-white text-googleBlue shadow-sm";
+      } else if (viewName === 'claim') {
+        document.getElementById('view-claim').classList.remove('hidden');
+        document.getElementById('nav-claim').className = "px-4 py-2 rounded-lg transition-all duration-200 bg-white text-googleBlue shadow-sm";
+      } else if (viewName === 'admin-login') {
+        if (localStorage.getItem('admin_session') === 'active') {
+          document.getElementById('view-admin-dashboard').classList.remove('hidden');
+          document.getElementById('nav-admin').className = "px-4 py-2 rounded-lg transition-all duration-200 bg-white text-googleRed shadow-sm";
+        } else {
+          document.getElementById('view-admin-login').classList.remove('hidden');
+          document.getElementById('nav-admin').className = "px-4 py-2 rounded-lg transition-all duration-200 bg-white text-googleRed shadow-sm";
+        }
+      }
+    }
+
+    // Active connection framework to Firebase using RULE 1 (Strict Pathing rules)
+    function initFirestoreSync() {
+      const targetCollection = `/artifacts/${appId}/public/data/registrations`;
+
+      db.collection(targetCollection).onSnapshot(snapshot => {
+        databaseReference = [];
+        snapshot.forEach(doc => {
+          databaseReference.push({ id: doc.id, ...doc.data() });
+        });
+        updateDashboardTelemetry();
+        applyFilters();
+      }, error => {
+        console.warn("Firestore subscription reading from offline cache index.", error);
+        showToast("Running offline. Showing cached local registry values.", "warning");
+      });
+    }
+
+    // Handling form submissions and checking for duplicate roll numbers
+    document.getElementById('registration-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-1.5"></i> Saving...';
+
+      // Capture all form state variables
+      const rollNumber = document.getElementById('reg-rollnumber').value.trim().toUpperCase();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
+      const fullName = document.getElementById('reg-fullname').value.trim();
+      const mobile = document.getElementById('reg-mobile').value.trim();
+      const branch = document.getElementById('reg-branch').value;
+      const year = document.getElementById('reg-year').value;
+      const gender = document.getElementById('reg-gender').value;
+      const googleAccount = document.querySelector('input[name="reg-google-acc"]:checked').value;
+      const familiarGemini = document.querySelector('input[name="reg-gemini-familiar"]:checked').value;
+      const meetAttend = document.querySelector('input[name="reg-meet-attend"]:checked').value;
+      
+      // Perform client side duplication check
+      const duplicateRecord = databaseReference.find(student => 
+        student.rollNumber === rollNumber || student.email === email
+      );
+
+      if (duplicateRecord) {
+        showToast("Error: Email or Roll Number already registered for this event.", "error");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Registration';
+        return;
+      }
+
+      // Generate a unique Certificate ID matching the required structural logic
+      const uniqueId = `GSA2026-${Math.floor(1000 + Math.random() * 9000)}-${rollNumber.slice(-4) || 'UCEM'}`;
+
+      const postData = {
+        fullName,
+        email,
+        mobile,
+        collegeName: "JNTUH University College of Engineering Mahabubabad",
+        branch,
+        yearOfStudy: year,
+        rollNumber,
+        gender,
+        googleAccount,
+        familiarGemini,
+        meetAttend,
+        attendance: "Absent", // Hardcoded Default - only modifiable by the Admin
+        certificateId: uniqueId,
+        registeredAt: new Date().toISOString()
+      };
+
+      try {
+        const path = `/artifacts/${appId}/public/data/registrations`;
+        await db.collection(path).add(postData);
+        
+        showToast("Registration Successfully recorded! Saved locally.", "success");
+        
+        // Reset form variables and redirect to certification lookup
+        document.getElementById('registration-form').reset();
+        switchView('claim');
+        document.getElementById('claim-search-val').value = rollNumber;
+        checkEligibility();
+        
+      } catch (error) {
+        console.warn("Firestore writing via offline sync cache pipeline.", error);
+        showToast("Saved offline! Your profile will sync once connection returns.", "warning");
+        
+        // Allow structural workflow to complete gracefully offline
+        document.getElementById('registration-form').reset();
+        switchView('claim');
+        document.getElementById('claim-search-val').value = rollNumber;
+        checkEligibility();
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Registration';
+      }
+    });
+
+    // Realtime high definition Canvas layout rendering process matching exact image format
+    function generateCertificate(student) {
+      selectedStudentForCertificate = student;
+      const canvas = document.getElementById('certificate-canvas');
+      const ctx = canvas.getContext('2d');
+
+      // 1. Setup Base clean white layout
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 2. Delicate premium textured background dots
+      ctx.fillStyle = '#cbd5e1';
+      ctx.globalAlpha = 0.45;
+      for (let x = 60; x < canvas.width - 60; x += 30) {
+        for (let y = 60; y < canvas.height - 60; y += 30) {
+          // Avoid drawing background dots inside content block to maintain absolute legibility
+          if (Math.abs(x - 600) > 420 || Math.abs(y - 380) > 280) {
+            ctx.beginPath();
+            ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      ctx.globalAlpha = 1.0;
+
+      // 3. Layered Abstract Colored Geometric Corners (Top-Left & Bottom Corner polygons)
+      // Top-Left Corner Bands
+      ctx.fillStyle = '#fbbc05'; // Yellow Base
+      ctx.beginPath();
+      ctx.moveTo(0, 0); ctx.lineTo(180, 0); ctx.lineTo(0, 180); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#ea4335'; // Red Band
+      ctx.beginPath();
+      ctx.moveTo(0, 0); ctx.lineTo(140, 0); ctx.lineTo(0, 140); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#1a73e8'; // Blue Cap
+      ctx.beginPath();
+      ctx.moveTo(0, 0); ctx.lineTo(90, 0); ctx.lineTo(0, 90); ctx.closePath(); ctx.fill();
+
+      // Bottom-Left Blue Overlaps
+      ctx.fillStyle = '#1a73e8';
+      ctx.beginPath();
+      ctx.moveTo(0, 848); ctx.lineTo(160, 848); ctx.lineTo(0, 688); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#1557b0';
+      ctx.beginPath();
+      ctx.moveTo(0, 848); ctx.lineTo(100, 848); ctx.lineTo(0, 748); ctx.closePath(); ctx.fill();
+
+      // Bottom-Right Corner abstract overlapping shapes (Blue, Green, Yellow, Red)
+      ctx.fillStyle = '#1a73e8'; // Blue base
+      ctx.beginPath();
+      ctx.moveTo(1200, 848); ctx.lineTo(900, 848); ctx.lineTo(1200, 548); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#34a853'; // Green
+      ctx.beginPath();
+      ctx.moveTo(1200, 848); ctx.lineTo(980, 848); ctx.lineTo(1200, 628); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#fbbc05'; // Yellow
+      ctx.beginPath();
+      ctx.moveTo(1200, 848); ctx.lineTo(1060, 848); ctx.lineTo(1200, 708); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#ea4335'; // Red
+      ctx.beginPath();
+      ctx.moveTo(1200, 848); ctx.lineTo(1130, 848); ctx.lineTo(1200, 778); ctx.closePath(); ctx.fill();
+
+      // 4. Draw Royal Blue Ribbon Badge (Top Right)
+      ctx.fillStyle = '#1565c0'; 
+      ctx.beginPath();
+      ctx.moveTo(1030, 0);
+      ctx.lineTo(1130, 0);
+      ctx.lineTo(1130, 240);
+      ctx.lineTo(1080, 200);
+      ctx.lineTo(1030, 240);
+      ctx.closePath();
+      ctx.fill();
+
+      // Thin gold borders on ribbon badge
+      ctx.strokeStyle = '#fbbc05';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(1035, 0);
+      ctx.lineTo(1035, 235);
+      ctx.lineTo(1080, 195);
+      ctx.lineTo(1125, 235);
+      ctx.lineTo(1125, 0);
+      ctx.stroke();
+
+      // Text inside Ribbon Badge
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 20px "Inter", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText("2026", 1080, 42);
+
+      // Medallion Wreath circle inside Ribbon
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(1080, 126, 36, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Circular solid fill
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(1080, 126, 30, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Google 'G' inner logo in Medallion
+      drawGoogleGLogo(ctx, 1080, 126, 16);
+
+      // 5. Branding Text and Google Student Ambassador logo (Top Left)
+      drawGoogleGLogo(ctx, 115, 115, 26);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#202124';
+      ctx.font = 'bold 18px "Inter", sans-serif';
+      ctx.fillText("Google", 160, 100);
+      ctx.font = '500 16px "Inter", sans-serif';
+      ctx.fillStyle = '#5f6368';
+      ctx.fillText("Student", 160, 118);
+      ctx.fillText("Ambassador", 160, 136);
+
+      // 6. Header Titles (Center Align)
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 52px "Inter", sans-serif';
+      ctx.fillText("CERTIFICATE", 600, 150);
+
+      // Thin divided colored line under Certificate title
+      ctx.strokeStyle = '#1a73e8'; // Blue segment
+      ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(270, 202); ctx.lineTo(410, 202); ctx.stroke();
+      
+      ctx.strokeStyle = '#ea4335'; // Red segment
+      ctx.beginPath(); ctx.moveTo(410, 202); ctx.lineTo(480, 202); ctx.stroke();
+
+      // OF PARTICIPATION title
+      ctx.fillStyle = '#1e7e34';
+      ctx.font = 'bold 18px "Inter", sans-serif';
+      ctx.fillText("OF PARTICIPATION", 600, 202);
+
+      ctx.strokeStyle = '#fbbc05'; // Yellow segment
+      ctx.beginPath(); ctx.moveTo(720, 202); ctx.lineTo(790, 202); ctx.stroke();
+      
+      ctx.strokeStyle = '#34a853'; // Green segment
+      ctx.beginPath(); ctx.moveTo(790, 202); ctx.lineTo(930, 202); ctx.stroke();
+
+      // 7. Award Section Sub-Label flanked by Wreaths
+      ctx.fillStyle = '#5f6368';
+      ctx.font = 'normal 17px "Inter", sans-serif';
+      ctx.fillText("This certificate is proudly awarded to", 600, 265);
+
+      // Render custom gold leaf wreaths on both sides
+      drawWreathBranch(ctx, 240, 330, 72, true);
+      drawWreathBranch(ctx, 960, 330, 72, false);
+
+      // Recipient prominent name
+      ctx.fillStyle = '#1a73e8';
+      ctx.font = 'italic bold 44px "Playfair Display", serif';
+      ctx.fillText(student.fullName, 600, 335);
+
+      // Thick dark underline
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(260, 370); ctx.lineTo(940, 370); ctx.stroke();
+
+      // 8. Custom inline formatted multi-colored body texts
+      drawStyledBodyText(ctx, 415);
+
+      // 9. Premium spec details cards grid (Y = 530)
+      const badgeXCoords = [300, 500, 700, 900];
+      const badgeData = [
+        { color: '#1a73e8', label: 'DATE', value: '6th June 2026', type: 'date' },
+        { color: '#ea4335', label: 'TIME', value: '12:30 PM', type: 'time' },
+        { color: '#34a853', label: 'MODE', value: 'Google Meet', type: 'mode' },
+        { color: '#fbbc05', label: 'ELIGIBILITY', value: 'All Students', type: 'eligibility' }
+      ];
+
+      badgeXCoords.forEach((cx, idx) => {
+        const data = badgeData[idx];
+        
+        // Background circle
+        ctx.fillStyle = data.color;
+        ctx.beginPath();
+        ctx.arc(cx, 530, 24, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Icons
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.fillStyle = '#ffffff';
+        
+        if (data.type === 'date') {
+          ctx.strokeRect(cx - 8, 523, 16, 14);
+          ctx.beginPath(); ctx.moveTo(cx - 8, 527); ctx.lineTo(cx + 8, 527); ctx.stroke();
+          ctx.fillRect(cx - 4, 531, 2, 2); ctx.fillRect(cx + 2, 531, 2, 2);
+        } else if (data.type === 'time') {
+          ctx.beginPath(); ctx.arc(cx, 530, 9, 0, Math.PI * 2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx, 530); ctx.lineTo(cx, 525); ctx.lineTo(cx + 4, 530); ctx.stroke();
+        } else if (data.type === 'mode') {
+          ctx.fillRect(cx - 9, 526, 11, 8);
+          ctx.strokeRect(cx - 9, 526, 11, 8);
+          ctx.beginPath();
+          ctx.moveTo(cx + 2, 527); ctx.lineTo(cx + 7, 523); ctx.lineTo(cx + 7, 537);
+          ctx.closePath(); ctx.fill();
+        } else if (data.type === 'eligibility') {
+          ctx.beginPath();
+          ctx.moveTo(cx, 523); ctx.lineTo(cx + 9, 527); ctx.lineTo(cx, 531); ctx.lineTo(cx - 9, 527);
+          ctx.closePath(); ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(cx - 5, 530); ctx.lineTo(cx - 5, 534);
+          ctx.arc(cx, 534, 5, Math.PI, 0, true);
+          ctx.lineTo(cx + 5, 530); ctx.stroke();
+        }
+
+        // Draw vertical dividers between spec badge clusters
+        if (idx < 3) {
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(cx + 100, 510); ctx.lineTo(cx + 100, 570); ctx.stroke();
+        }
+
+        // Labels
+        ctx.textAlign = 'center';
+        ctx.fillStyle = data.color;
+        ctx.font = 'bold 11px "Inter", sans-serif';
+        ctx.fillText(data.label, cx, 574);
+
+        ctx.fillStyle = '#202124';
+        ctx.font = 'bold 12px "Inter", sans-serif';
+        ctx.fillText(data.value, cx, 590);
+      });
+
+      // 10. Draw Bottom center "KEEP LEARNING" badge seal flanked by wreaths (Y = 690)
+      const sealX = 600;
+      const sealY = 695;
+      
+      drawWreathBranch(ctx, 515, 695, 42, true);
+      drawWreathBranch(ctx, 685, 695, 42, false);
+
+      // Scalloped seal outline
+      ctx.fillStyle = '#34a853';
+      ctx.beginPath();
+      const numPoints = 30;
+      for (let i = 0; i < numPoints * 2; i++) {
+        const angle = (i * Math.PI) / numPoints;
+        const r = i % 2 === 0 ? 38 : 34;
+        ctx.lineTo(sealX + Math.cos(angle) * r, sealY + Math.sin(angle) * r);
+      }
+      ctx.closePath(); ctx.fill();
+
+      // White inner seal
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(sealX, sealY, 32, 0, Math.PI * 2); ctx.fill();
+
+      // Sticker Stack text
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      ctx.fillStyle = '#1a73e8'; // KEEP (blue)
+      ctx.font = 'bold 9px "Inter", sans-serif';
+      ctx.fillText("KEEP", sealX, sealY - 18);
+      
+      ctx.fillStyle = '#ea4335'; // LEARNING (red)
+      ctx.font = 'bold 10px "Inter", sans-serif';
+      ctx.fillText("LEARNING", sealX, sealY - 7);
+      
+      ctx.fillStyle = '#fbbc05'; // KEEP (yellow)
+      ctx.font = 'bold 9px "Inter", sans-serif';
+      ctx.fillText("KEEP", sealX, sealY + 4);
+      
+      ctx.fillStyle = '#34a853'; // INSPIRING (green)
+      ctx.font = 'bold 10px "Inter", sans-serif';
+      ctx.fillText("INSPIRING", sealX, sealY + 14);
+
+      // Miniature stars at seal base
+      drawVectorStar(ctx, sealX - 10, sealY + 23, 5, 3.5, 1.5, '#ea4335');
+      drawVectorStar(ctx, sealX, sealY + 23, 5, 3.5, 1.5, '#1a73e8');
+      drawVectorStar(ctx, sealX + 10, sealY + 23, 5, 3.5, 1.5, '#fbbc05');
+
+      // 11. Left/Right signature blocks and cursive simulated scripts (Y = 690 to 765)
+      // Left Signature Line
+      ctx.strokeStyle = '#dadce0';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(180, 715); ctx.lineTo(380, 715); ctx.stroke();
+
+      // Simulated cursive hand drawn vector line signatures
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(210, 695);
+      ctx.bezierCurveTo(230, 675, 250, 710, 270, 685);
+      ctx.bezierCurveTo(290, 665, 310, 705, 330, 690);
+      ctx.lineTo(350, 690);
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#202124';
+      ctx.font = 'bold 13px "Inter", sans-serif';
+      ctx.fillText("Pranav Sharma", 280, 734);
+      ctx.fillStyle = '#70757a';
+      ctx.font = '500 11px "Inter", sans-serif';
+      ctx.fillText("Google Student Ambassador Organizer", 280, 750);
+      ctx.fillText("Organizer", 280, 764);
+
+      // Right Signature Line
+      ctx.strokeStyle = '#dadce0';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(820, 715); ctx.lineTo(1020, 715); ctx.stroke();
+
+      // Faculty signature hand drawn vector
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(850, 698);
+      ctx.bezierCurveTo(870, 678, 890, 713, 910, 688);
+      ctx.bezierCurveTo(930, 668, 950, 708, 970, 693);
+      ctx.lineTo(990, 693);
+      ctx.stroke();
+
+      ctx.fillStyle = '#202124';
+      ctx.font = 'bold 13px "Inter", sans-serif';
+      ctx.fillText("Dr. K. Srinivas", 920, 734);
+      ctx.fillStyle = '#70757a';
+      ctx.font = '500 11px "Inter", sans-serif';
+      ctx.fillText("Google Student Ambassador Program", 920, 750);
+      ctx.fillText("Google", 920, 764);
+
+      // 12. Bottom structural parameters (Y = 810)
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#9aa0a6';
+      ctx.font = 'normal 11px "Inter", sans-serif';
+      ctx.fillText(`CERTIFICATE ID: ${student.certificateId}`, 50, 810);
+
+      ctx.textAlign = 'right';
+      ctx.fillText("Thank you for being a part of our community!", 1150, 810);
+    }
+
+    // Programmatic Gold/Green leaf wreaths curves builder
+    function drawWreathBranch(ctx, centerX, centerY, radius, isLeft) {
+      ctx.save();
+      ctx.strokeStyle = isLeft ? '#fbbc05' : '#34a853';
+      ctx.fillStyle = isLeft ? '#fbbc05' : '#34a853';
+      ctx.lineWidth = 2;
+      
+      // Arc branch curve pathway setup
+      ctx.beginPath();
+      const startAngle = isLeft ? Math.PI * 0.5 : -Math.PI * 0.5;
+      const endAngle = isLeft ? Math.PI * 1.35 : -Math.PI * 0.35;
+      ctx.arc(centerX, centerY, radius, startAngle, endAngle, !isLeft);
+      ctx.stroke();
+
+      // Programming pairs leaf curves
+      const steps = 8;
+      for (let i = 0; i <= steps; i++) {
+        const factor = i / steps;
+        const angle = startAngle + (endAngle - startAngle) * factor;
+        const leafX = centerX + Math.cos(angle) * radius;
+        const leafY = centerY + Math.sin(angle) * radius;
+        
+        ctx.save();
+        ctx.translate(leafX, leafY);
+        ctx.rotate(angle + (isLeft ? Math.PI/4 : -Math.PI/4));
+        
+        // Leaf segment pair
+        ctx.beginPath();
+        ctx.ellipse(-4, -1.5, 7, 3.5, Math.PI/6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(4, 1.5, 7, 3.5, -Math.PI/6, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
+      }
+
+      // Small star topper
+      const starAngle = endAngle;
+      const starX = centerX + Math.cos(starAngle) * (radius + 4);
+      const starY = centerY + Math.sin(starAngle) * (radius + 4);
+      drawVectorStar(ctx, starX, starY, 5, 6, 2.5, isLeft ? '#fbbc05' : '#34a853');
+
+      ctx.restore();
+    }
+
+    // Scalable Vector mathematical multi-colored Google "G" logo drawer
+    function drawGoogleGLogo(ctx, cx, cy, r) {
+      ctx.save();
+      const thickness = r * 0.36;
+
+      // Segment 1: Red Top Arc
+      ctx.fillStyle = '#ea4335';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, -Math.PI * 0.76, -Math.PI * 0.24);
+      ctx.arc(cx, cy, r - thickness, -Math.PI * 0.24, -Math.PI * 0.76, true);
+      ctx.closePath(); ctx.fill();
+
+      // Segment 2: Yellow Left Arc
+      ctx.fillStyle = '#fbbc05';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, -Math.PI * 1.26, -Math.PI * 0.76);
+      ctx.arc(cx, cy, r - thickness, -Math.PI * 0.76, -Math.PI * 1.26, true);
+      ctx.closePath(); ctx.fill();
+
+      // Segment 3: Green Bottom Arc
+      ctx.fillStyle = '#34a853';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, Math.PI * 0.24, Math.PI * 1.26);
+      ctx.arc(cx, cy, r - thickness, Math.PI * 1.26, Math.PI * 0.24, true);
+      ctx.closePath(); ctx.fill();
+
+      // Segment 4: Blue Right Arc + Horizontal Bar
+      ctx.fillStyle = '#1a73e8';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, -Math.PI * 0.24, Math.PI * 0.24);
+      ctx.arc(cx, cy, r - thickness, Math.PI * 0.24, -Math.PI * 0.24, true);
+      ctx.closePath(); ctx.fill();
+
+      // Horizontal central segment G Bar
+      ctx.fillRect(cx, cy - thickness/2, r, thickness);
+      
+      ctx.restore();
+    }
+
+    // Scalable dynamic star shape vector rendering formula
+    function drawVectorStar(ctx, cx, cy, spikes, outerRadius, innerRadius, fillStyle) {
+      ctx.save();
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      let step = Math.PI / spikes;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Inline colored segmented text line compiler
+    function drawStyledBodyText(ctx, yStart) {
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Segment 1 List compilation
+      const line1 = [
+        { text: "for actively participating in ", font: "normal 15px 'Inter', sans-serif", color: "#5f6368" },
+        { text: "Google Student Ambassador Meetup 2026", font: "bold 15px 'Inter', sans-serif", color: "#1a73e8" }
+      ];
+      drawRowOfSegments(ctx, line1, yStart);
+
+      // Segment 2 List compilation
+      const line2 = [
+        { text: "AI Poster Design Challenge ", font: "bold 16px 'Inter', sans-serif", color: "#34a853" },
+        { text: "using ", font: "normal 15px 'Inter', sans-serif", color: "#5f6368" },
+        { text: "Gemini + Nano Banana", font: "bold 16px 'Inter', sans-serif", color: "#1a73e8" }
+      ];
+      drawRowOfSegments(ctx, line2, yStart + 26);
+
+      // Segment 3 List compilation
+      const line3 = [
+        { text: "conducted via ", font: "normal 15px 'Inter', sans-serif", color: "#5f6368" },
+        { text: "Google Meet ", font: "bold 15px 'Inter', sans-serif", color: "#ea4335" },
+        { text: "on 6th June 2026.", font: "normal 15px 'Inter', sans-serif", color: "#5f6368" }
+      ];
+      drawRowOfSegments(ctx, line3, yStart + 52);
+    }
+
+    function drawRowOfSegments(ctx, segments, y) {
+      let totalWidth = 0;
+      segments.forEach(seg => {
+        ctx.font = seg.font;
+        totalWidth += ctx.measureText(seg.text).width;
+      });
+
+      let startX = (1200 - totalWidth) / 2;
+      ctx.textAlign = 'left';
+      segments.forEach(seg => {
+        ctx.font = seg.font;
+        ctx.fillStyle = seg.color;
+        ctx.fillText(seg.text, startX, y);
+        startX += ctx.measureText(seg.text).width;
+      });
+    }
+
+    // Local pdf construction from drawn Canvas frame
+    function downloadCertificatePDF() {
+      if (!selectedStudentForCertificate) return;
+      const canvas = document.getElementById('certificate-canvas');
+      const { jsPDF } = window.jspdf;
+      
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+
+      const imageDataURL = canvas.toDataURL('image/jpeg', 1.0);
+      pdf.addImage(imageDataURL, 'JPEG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`GSA_Meetup_2026_Certificate_${selectedStudentForCertificate.rollNumber}.pdf`);
+      showToast("PDF Download initiated. Enjoy your digital certificate!", "success");
+    }
+
+    // Dynamic database search verify and routing
+    function checkEligibility() {
+      const searchVal = document.getElementById('claim-search-val').value.trim().toUpperCase();
+      const statusBox = document.getElementById('claim-status-box');
+      const previewArea = document.getElementById('certificate-preview-area');
+      
+      if (!searchVal) {
+        showToast("Please enter a roll number or registered email.", "error");
+        return;
+      }
+
+      // Check current records
+      const student = databaseReference.find(s => 
+        s.rollNumber.toUpperCase() === searchVal || s.email.toLowerCase() === searchVal.toLowerCase()
+      );
+
+      statusBox.className = "max-w-md mx-auto p-4 rounded-xl text-sm font-medium fade-in ";
+      statusBox.classList.remove('hidden');
+
+      if (!student) {
+        statusBox.className += "bg-red-50 text-googleRed border border-red-200";
+        statusBox.innerHTML = `<i class="fa-solid fa-face-frown mr-2"></i> No registration found matching those details. Please try again or verify with the coordinate team.`;
+        previewArea.classList.add('hidden');
+        return;
+      }
+
+      if (student.attendance !== "Present") {
+        statusBox.className += "bg-yellow-50 text-yellow-800 border border-yellow-200";
+        statusBox.innerHTML = `
+          <div class="text-left space-y-1.5">
+            <p class="font-bold"><i class="fa-solid fa-user-clock mr-2"></i> Registration Found!</p>
+            <p class="text-xs">Student: <strong class="text-black">${student.fullName}</strong> (${student.rollNumber})</p>
+            <p class="text-xs">Status: <span class="bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded-full font-bold">Absent</span></p>
+            <p class="text-[11px] leading-tight text-yellow-600 mt-2">
+              Note: Attendance tracking has not been marked "Present" for your roll number. Certificates are only generated for students who attend the sessions. If this is a mistake, request verification from your admin.
+            </p>
+          </div>`;
+        previewArea.classList.add('hidden');
+        return;
+      }
+
+      // Show Certificate Preview if status is Present
+      statusBox.className += "bg-green-50 text-googleGreen border border-green-200";
+      statusBox.innerHTML = `
+        <div class="text-left space-y-1">
+          <p class="font-bold"><i class="fa-solid fa-circle-check mr-2"></i> Verification Successful!</p>
+          <p class="text-xs">Your certificate is ready. Check the preview window below.</p>
+        </div>`;
+      
+      previewArea.classList.remove('hidden');
+      generateCertificate(student);
+    }
+
+    // Admin Login logic
+    function attemptAdminLogin() {
+      const passkey = document.getElementById('admin-passkey').value.trim();
+      if (passkey === 'admin2026') {
+        localStorage.setItem('admin_session', 'active');
+        showToast("Authorization Granted. Launching Admin Dashboard.", "success");
+        switchView('admin-login');
+      } else {
+        showToast("Authentication Failed. Invalid passcode key.", "error");
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('admin_session');
+      showToast("Signed out of secure session successfully.", "success");
+      switchView('register');
+    }
+
+    // Statistics updating logic
+    function updateDashboardTelemetry() {
+      const total = databaseReference.length;
+      const present = databaseReference.filter(s => s.attendance === "Present").length;
+      const absent = total - present;
+      const ratio = total > 0 ? Math.round((present / total) * 100) : 0;
+
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-present').innerText = present;
+      document.getElementById('stat-absent').innerText = absent;
+      document.getElementById('stat-ratio').innerText = `${ratio}%`;
+    }
+
+    // Apply Filters to Table data dynamically
+    function applyFilters() {
+      if (localStorage.getItem('admin_session') !== 'active') return;
+
+      const searchValue = document.getElementById('admin-search').value.toLowerCase();
+      const branchFilter = document.getElementById('filter-branch').value;
+      const yearFilter = document.getElementById('filter-year').value;
+      const attendanceFilter = document.getElementById('filter-attendance').value;
+
+      const filtered = databaseReference.filter(student => {
+        const matchesSearch = student.fullName.toLowerCase().includes(searchValue) || 
+                              student.rollNumber.toLowerCase().includes(searchValue) || 
+                              student.email.toLowerCase().includes(searchValue);
+        const matchesBranch = !branchFilter || student.branch === branchFilter;
+        const matchesYear = !yearFilter || student.yearOfStudy === yearFilter;
+        const matchesAttendance = !attendanceFilter || student.attendance === attendanceFilter;
+
+        return matchesSearch && matchesBranch && matchesYear && matchesAttendance;
+      });
+
+      renderAdminTable(filtered);
+    }
+
+    // Draw rows inside the Administration command table grid
+    function renderAdminTable(dataList) {
+      const tbody = document.getElementById('admin-table-body');
+      tbody.innerHTML = '';
+
+      if (dataList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="px-6 py-12 text-center text-sm text-gray-400">
+              <i class="fa-solid fa-inbox text-3xl mb-2 block"></i> No records match filters
+            </td>
+          </tr>`;
+        return;
+      }
+
+      dataList.forEach(student => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-50 transition";
+        
+        const attendanceBadge = student.attendance === "Present" 
+          ? `<span class="bg-green-100 text-googleGreen text-xs font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle-check mr-1"></i>Present</span>`
+          : `<span class="bg-red-100 text-googleRed text-xs font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle-xmark mr-1"></i>Absent</span>`;
+
+        tr.innerHTML = `
+          <td class="px-6 py-4">
+            <div class="font-bold text-gray-900">${student.fullName}</div>
+            <div class="text-xs text-gray-400">${student.email}</div>
+          </td>
+          <td class="px-6 py-4 font-mono font-bold text-gray-700">${student.rollNumber}</td>
+          <td class="px-6 py-4 text-xs font-medium text-gray-500">${student.branch} - ${student.yearOfStudy} Year</td>
+          <td class="px-6 py-4 text-xs font-mono text-gray-500">${student.mobile}</td>
+          <td class="px-6 py-4 text-center text-xs font-semibold ${student.familiarGemini === 'Yes' ? 'text-googleGreen' : 'text-googleRed'}">${student.familiarGemini}</td>
+          <td class="px-6 py-4 text-center">${attendanceBadge}</td>
+          <td class="px-6 py-4 text-center">
+            <button onclick="toggleAttendance('${student.id}', '${student.attendance}')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-300 hover:border-googleBlue text-gray-700 hover:text-googleBlue bg-white shadow-sm transition">
+              Toggle
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Toggle Attendance Status directly on database using strict rules
+    async function toggleAttendance(docId, currentStatus) {
+      const newStatus = currentStatus === "Present" ? "Absent" : "Present";
+      const targetPath = `/artifacts/${appId}/public/data/registrations/${docId}`;
+      
+      try {
+        await db.doc(targetPath).update({ attendance: newStatus });
+        showToast("Student Attendance Status modified.", "success");
+      } catch (error) {
+        showToast("Error updating database record.", "error");
+      }
+    }
+
+    // Secure CSV compiling and transfer mechanism
+    function exportToCSV() {
+      if (databaseReference.length === 0) {
+        showToast("There are no records to export.", "warning");
+        return;
+      }
+
+      let csvContent = "Roll Number,Full Name,Email,Mobile,Branch,Year of Study,Gender,Google Account,Familiar with Gemini,Attendance,Certificate ID\n";
+      
+      databaseReference.forEach(s => {
+        csvContent += `"${s.rollNumber}","${s.fullName}","${s.email}","${s.mobile}","${s.branch}","${s.yearOfStudy}","${s.gender}","${s.googleAccount}","${s.familiarGemini}","${s.attendance}","${s.certificateId}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "GSA_Meetup_2026_Registrations.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("CSV Compilation complete and downloaded.", "success");
+    }
+
+    // Modal Control and Interactive Console Simulations
+    function openSimulationConsole() {
+      document.getElementById('modal-console').classList.remove('hidden');
+    }
+
+    function closeSimulationConsole() {
+      document.getElementById('modal-console').classList.add('hidden');
+    }
+
+    // Simulating secure bulk broadcasts with clear visual status logging
+    async function triggerBroadcast(type) {
+      const log = document.getElementById('terminal-log');
+      log.innerHTML = '';
+      
+      if (databaseReference.length === 0) {
+        log.innerHTML += `[ERROR] Unable to run jobs: Registration roster is currently empty.<br>`;
+        return;
+      }
+
+      if (type === 'meet') {
+        log.innerHTML += `[INFO] Initializing Google Meet Join Link Broadcast to all students...<br>`;
+        for (let i = 0; i < databaseReference.length; i++) {
+          const s = databaseReference[i];
+          await waitTime(150);
+          log.innerHTML += `[SUCCESS] Meet Link sent successfully to -> ${s.email}<br>`;
+          log.scrollTop = log.scrollHeight;
+        }
+        log.innerHTML += `[SUCCESS] Secure broadcast complete. All mail targets dispatched successfully.<br>`;
+        showToast("Simulated Meet Link mailing broadcast complete.", "success");
+      } else if (type === 'cert') {
+        const attending = databaseReference.filter(s => s.attendance === "Present");
+        if (attending.length === 0) {
+          log.innerHTML += `[WARNING] Bulk generation aborted. No attendees found with "Present" status.<br>`;
+          return;
+        }
+        
+        log.innerHTML += `[INFO] Compiling and rendering ${attending.length} certificates with verification hashes...<br>`;
+        for (let i = 0; i < attending.length; i++) {
+          const s = attending[i];
+          await waitTime(200);
+          log.innerHTML += `[GENERATED] Created secure PDF for: ${s.fullName} [ID: ${s.certificateId}]<br>`;
+          log.scrollTop = log.scrollHeight;
+        }
+        log.innerHTML += `[SUCCESS] Bulk Generation complete. Verified PDF credentials loaded onto database registry.<br>`;
+        showToast("Simulated Certificate Bulk dispatch completed.", "success");
+      }
+    }
+
+    function waitTime(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  </script>
+</body>
+</html>
